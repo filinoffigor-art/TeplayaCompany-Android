@@ -1,0 +1,45 @@
+name: Build TeplayaCompany APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download project
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+
+      - name: Unpack Android project
+        run: |
+          mkdir build-src
+          unzip TeplayaCompany-source.zip -d build-src
+
+      - name: Build APK
+        working-directory: build-src/teplaya_company_android_v1
+        run: gradle assembleDebug
+
+      - name: Prepare APK
+        run: |
+          cp build-src/teplaya_company_android_v1/app/build/outputs/apk/debug/app-debug.apk TeplayaCompany-v1.0.0.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: TeplayaCompany-v1.0.0
+          path: TeplayaCompany-v1.0.0.apk
