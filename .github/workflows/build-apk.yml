@@ -1,4 +1,4 @@
-name: Build TeplayaCompany v2 APK
+name: Build TeplayaCompany v3 APK
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -34,17 +34,14 @@ jobs:
           mkdir build-src
           unzip -q TeplayaCompany-source.zip -d build-src
 
-      - name: Verify v2 Engineer module
+      - name: Verify v3 modules
         run: |
-          grep -q "versionName '2.0.0'" build-src/teplaya_company_android_v1/app/build.gradle
-          grep -q 'data-screen="engineer"' build-src/teplaya_company_android_v1/app/src/main/assets/index.html
-          grep -q '>Инженер<' build-src/teplaya_company_android_v1/app/src/main/assets/index.html
-          echo "Verified: Android v2.0.0 + Engineer UI"
-
-      - name: Enable AndroidX
-        run: |
-          echo "android.useAndroidX=true" > build-src/teplaya_company_android_v1/gradle.properties
-          echo "android.enableJetifier=true" >> build-src/teplaya_company_android_v1/gradle.properties
+          grep -q "versionName '3.0.0'" build-src/teplaya_company_android_v1/app/build.gradle
+          grep -q 'Участники бригад' build-src/teplaya_company_android_v1/app/src/main/assets/index.html
+          grep -q 'Будущие дни' build-src/teplaya_company_android_v1/app/src/main/assets/index.html
+          grep -q 'Начисления ЗП' build-src/teplaya_company_android_v1/google-apps-script/Code.gs
+          grep -q 'android.useAndroidX=true' build-src/teplaya_company_android_v1/gradle.properties
+          echo "Verified: Android v3.0.0 + dynamic directories + crew + payroll"
 
       - name: Build APK
         working-directory: build-src/teplaya_company_android_v1
@@ -52,10 +49,10 @@ jobs:
 
       - name: Prepare APK
         run: |
-          cp build-src/teplaya_company_android_v1/app/build/outputs/apk/debug/app-debug.apk TeplayaCompany-v2.0.0-ENGINEER.apk
+          cp build-src/teplaya_company_android_v1/app/build/outputs/apk/debug/app-debug.apk TeplayaCompany-v3.0.0.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: TeplayaCompany-v2.0.0-ENGINEER
-          path: TeplayaCompany-v2.0.0-ENGINEER.apk
+          name: TeplayaCompany-v3.0.0
+          path: TeplayaCompany-v3.0.0.apk
