@@ -41,6 +41,11 @@ jobs:
           grep -q '>Инженер<' build-src/teplaya_company_android_v1/app/src/main/assets/index.html
           echo "Verified: Android v2.0.0 + Engineer UI"
 
+      - name: Enable AndroidX
+        run: |
+          echo "android.useAndroidX=true" > build-src/teplaya_company_android_v1/gradle.properties
+          echo "android.enableJetifier=true" >> build-src/teplaya_company_android_v1/gradle.properties
+
       - name: Build APK
         working-directory: build-src/teplaya_company_android_v1
         run: gradle assembleDebug
