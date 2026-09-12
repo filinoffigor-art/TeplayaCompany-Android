@@ -1,0 +1,20 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'ru.teplayakompaniya.tk4'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'ru.teplayakompaniya.tk4'
+        minSdk 26
+        targetSdk 35
+        versionCode 400003
+        versionName '4.0.0-alpha3'
+    }
+}
+
+dependencies {
+    implementation "androidx.webkit:webkit:1.17.0"
+}
