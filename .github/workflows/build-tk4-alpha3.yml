@@ -1,0 +1,45 @@
+name: Build TeplayaCompany TK4 Alpha3 APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'tk4a3/**'
+      - '.github/workflows/build-tk4-alpha3.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+      - name: Verify alpha3
+        run: |
+          grep -q "versionName '4.0.0-alpha3'" tk4a3/android/app/build.gradle
+          grep -q 'Запускаю интерфейс' tk4a3/android/app/src/main/assets/index.html
+          grep -q 'Интерфейс не запустился' tk4a3/android/app/src/main/assets/index.html
+          if grep -q '\?\.' tk4a3/android/app/src/main/assets/app.js; then
+            echo "Optional chaining found"; exit 1;
+          fi
+          echo "Verified TK4 alpha3 compatibility fixes"
+      - name: Build APK
+        working-directory: tk4a3/android
+        run: gradle assembleDebug
+      - name: Prepare APK
+        run: cp tk4a3/android/app/build/outputs/apk/debug/app-debug.apk TeplayaCompany-v4.0.0-alpha3.apk
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: TeplayaCompany-v4.0.0-alpha3
+          path: TeplayaCompany-v4.0.0-alpha3.apk
